@@ -1,6 +1,8 @@
 from django.db import transaction
+from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
+from .filters import ExamFilterBackend
 from .models import Exam, Option, Question
 from .serializers import (
     ExamSerializer,
@@ -20,6 +22,8 @@ class QuestionViewSet(ModelViewSet):
         "options"
     )
     serializer_class = QuestionSerializer
+    filter_backends = [ExamFilterBackend, SearchFilter]
+    search_fields = ["text"]
 
 
 class OptionViewSet(ModelViewSet):

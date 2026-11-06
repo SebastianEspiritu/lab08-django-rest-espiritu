@@ -1,7 +1,7 @@
 # Laboratorio 08: Servicios Web con Django
 
-Curso: Desarrollo de Aplicaciones Empresariales. Etapas 1 a 4: configuración
-inicial, modelos, relaciones, serializadores y API REST.
+Curso: Desarrollo de Aplicaciones Empresariales. Etapas 1 a 5: configuración
+inicial, modelos, relaciones, serializadores, API REST y consultas paginadas.
 
 ## Instalación y ejecución en PowerShell
 
@@ -154,7 +154,7 @@ Las colecciones permiten GET (200) y POST (201). Los detalles permiten GET,
 PUT y PATCH (200), y DELETE (204 para JSON). Los errores de validación devuelven
 400 y los identificadores inexistentes 404. HEAD y OPTIONS también están
 disponibles. Se conservan la paginación básica de 10 elementos y `AllowAny`
-para desarrollo local, sin añadir filtrado, búsqueda ni paginación avanzada.
+para desarrollo local. La Etapa 5 añade filtrado y búsqueda de preguntas.
 
 `/api/` muestra los enlaces a los tres recursos. La respuesta se negocia según
 `Accept`: JSON o HTML de la API navegable. En DELETE exitoso con `Accept:
@@ -202,6 +202,76 @@ reiniciar; para conservarlas, definir una clave local estable en esa variable.
 No se escriben credenciales en `settings.py`. Los archivos `.env` se ignoran,
 pero no se cargan automáticamente.
 
+## Filtrado, búsqueda y paginación (Etapa 5)
+
+Los parámetros se aplican a `/api/questions/` y se pueden combinar:
+
+| Parámetro | Comportamiento | Ejemplo |
+| --- | --- | --- |
+| `exam` | Coincidencia exacta del identificador del examen | `?exam=1` |
+| `search` | Coincidencia parcial en `text`, sin distinguir mayúsculas y minúsculas | `?search=python` |
+| `page` | Página de 10 resultados, ordenados por ID | `?page=2` |
+
+Ejemplo combinado: `/api/questions/?exam=1&search=python&page=2`.
+Se usa un backend propio para validar y filtrar `exam`, y `SearchFilter` de DRF
+para `text`. No se añadieron dependencias. Se conservan las opciones anidadas,
+`select_related("exam")` y `prefetch_related("options")`.
+Una consulta combinada con resultados mantiene tres consultas SQL.
+
+`exam` debe ser un entero positivo en formato decimal canónico, sin espacios,
+signo ni ceros iniciales, hasta 9223372036854775807 (límite entero de SQLite).
+Un valor vacío, negativo, decimal, no numérico o fuera de rango devuelve 400
+con error en `exam`. Un identificador válido inexistente devuelve 200 con
+`count: 0` y `results: []`. Omitir `exam` no filtra por examen.
+
+`search` utiliza las reglas estándar de DRF: un término busca una subcadena;
+varios términos deben coincidir en el enunciado. Omitirlo o enviarlo vacío no
+restringe los resultados. Una búsqueda sin coincidencias devuelve 200 y lista
+vacía. La comparación sin distinción de mayúsculas funciona para los ejemplos
+ASCII del laboratorio; SQLite tiene limitaciones de comparación Unicode.
+
+La configuración original de `settings.py` se mantiene: `PageNumberPagination`
+y `PAGE_SIZE=10`. La respuesta contiene `count` (total después de filtrar),
+`next`, `previous` y `results`. Los enlaces conservan `exam` y `search`.
+La primera página no tiene enlace anterior y la última no tiene siguiente.
+Las páginas inválidas o fuera del rango devuelven 404, también con filtros.
+No se permite cambiar el tamaño mediante un parámetro de consulta.
+
+### Datos de demostración
+
+```powershell
+.\.venv\Scripts\python.exe manage.py seed_quiz_demo
+```
+
+Cada ejecución agrega dos exámenes, 21 preguntas y 42 opciones dentro de una
+transacción. El primer examen tiene 15 preguntas con `Python`; el segundo,
+3 con `Python` y 3 con `Django`. Cada pregunta tiene dos opciones y exactamente
+una correcta. El comando imprime los IDs de los exámenes creados.
+Es aditivo: repetirlo crea otro conjunto; no actualiza ni elimina registros
+previos. No utiliza migraciones para cargar datos. La paginación y los conteos
+globales pueden cambiar si ya existen datos o se ejecuta varias veces.
+
+En la ejecución local de esta etapa se crearon los exámenes 1 y 2. Se verificó
+con un servidor real y un cliente HTTP externo de Python:
+
+| Consulta GET | HTTP | Total | Elementos recibidos |
+| --- | --- | --- | --- |
+| `/api/questions/?exam=1` | 200 | 15 | 10 |
+| `/api/questions/?search=python` | 200 | 18 | 10 |
+| `/api/questions/?page=2` | 200 | 21 | 10 |
+| `/api/questions/?exam=1&search=python&page=2` | 200 | 15 | 5 |
+
+Se comprobaron las opciones anidadas y su única respuesta correcta. La consulta
+combinada de página 2 tiene `next: null` y enlace anterior con ambos filtros.
+El servidor se detuvo después. Estos resultados son una evidencia de esa
+ejecución; no sustituyen las pruebas externas CRUD pendientes.
+
+Verificación automatizada: `manage.py test` ejecutó **60 pruebas aprobadas**
+(47 anteriores y 13 nuevas). Las nuevas cubren filtros, IDs inválidos,
+búsqueda, combinaciones, páginas, enlaces, conteos, integridad, consultas SQL
+y el carácter aditivo y atómico del comando. `manage.py check` no detectó
+problemas. No se modificaron modelos, serializadores ni configuración global.
+
 ## Seguimiento del laboratorio
 
 Fuente principal: `GLAB-S08-MMONTGOMERY-2026-02.docx`, consultado desde la ruta
@@ -219,7 +289,7 @@ El documento no se modificó ni se copió al repositorio.
 | 7 | Listar, detalle, crear, modificar parcialmente y eliminar en API navegable; códigos HTTP | Pendiente |
 | 8 | Repetir cinco operaciones con JSON desde cliente HTTP externo | Pendiente |
 | 9 | Mensajes y códigos de campo ausente, tipo incorrecto y opción correcta inválida | Pendiente |
-| 10 | Filtrar por examen, buscar por enunciado y comprobar varias páginas | Pendiente |
+| 10 | Filtrar por examen, buscar por enunciado y comprobar varias páginas | Completado |
 | 11 | Tabla de recurso, dirección, método, cuerpo y respuesta esperada | Pendiente |
 | 12 | Repositorio y entregable en campus | Pendiente; commit y push requieren autorización |
 
@@ -232,9 +302,9 @@ Para aspirar a los 20 puntos deben completarse estas evidencias:
 | Operaciones HTTP | 5 | Cinco operaciones desde cliente externo y códigos correctos, incluidos errores |
 | Repositorio y tabla API | 5 | Tabla completa que coincida con la API real y entrega del repositorio |
 
-Las etapas 1 a 4 cubren la base, los serializadores y la publicación de los tres
-recursos. Faltan las evidencias HTTP del entregable, filtrado, búsqueda,
-comprobación de varias páginas, tabla completa de ejemplos y entrega final.
+Las etapas 1 a 5 cubren la base, los serializadores, la publicación de los tres
+recursos y las consultas paginadas. Faltan las evidencias HTTP completas del
+entregable, la tabla completa de ejemplos y la entrega final.
 El entregable posterior debe registrar nombre del alumno, título, captura del
 resultado, código, explicación, casos de prueba y captura de la estructura.
 El criterio de desempeño 1.3 no suma puntos adicionales.
