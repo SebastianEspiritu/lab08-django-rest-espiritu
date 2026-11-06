@@ -1,6 +1,7 @@
 # Laboratorio 08: Servicios Web con Django
 
-Curso: Desarrollo de Aplicaciones Empresariales. Etapa 1: configuración inicial.
+Curso: Desarrollo de Aplicaciones Empresariales. Etapas 1 y 2: configuración
+inicial, modelos y relaciones.
 
 ## Instalación y ejecución en PowerShell
 
@@ -22,8 +23,46 @@ El proyecto se llama `config` y la aplicación `quiz`. Las versiones exactas
 están fijadas en `requirements.txt`. SQLite crea `db.sqlite3` al migrar.
 La base local, `.venv/`, `.env` y los archivos compilados quedan ignorados por
 Git. Las migraciones propias que se creen posteriormente sí se versionarán.
-Todavía no hay modelos del dominio, serializadores, ViewSets ni endpoints API.
+Los modelos del dominio ya están definidos. Todavía no hay serializadores,
+ViewSets ni endpoints API.
 La ruta `/admin/` pertenece a Django.
+
+## Modelos y relaciones (Etapa 2)
+
+| Modelo | Campos propios | Relación |
+| --- | --- | --- |
+| `Exam` | `title`: texto obligatorio de hasta 200 caracteres | `exam.questions.all()` obtiene sus preguntas |
+| `Question` | `text`: enunciado obligatorio sin límite fijo de longitud | `exam`: ForeignKey obligatorio a Exam; `question.options.all()` obtiene sus opciones |
+| `Option` | `text`: texto obligatorio de hasta 500 caracteres; `is_correct`: booleano, inicialmente falso | `question`: ForeignKey obligatorio a Question |
+
+Todos incluyen un `id` automático de tipo BigAutoField y representación
+`__str__` basada en su texto o título. El orden predeterminado por `id` permite
+una paginación estable. Los títulos y textos no se restringen a valores únicos.
+
+Las dos relaciones son uno a muchos, con `related_name="questions"` y
+`related_name="options"`. Usan `CASCADE`: borrar un examen elimina sus preguntas
+y opciones; borrar una pregunta elimina sus opciones. Los otros recursos
+permanecen intactos. Los tres modelos están registrados en Admin con búsqueda
+y filtros adecuados. Para acceder, crear un usuario administrador local:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py createsuperuser
+```
+
+La migración `quiz/migrations/0001_initial.py` crea las tres tablas.
+Para comprobar las relaciones y el borrado en cascada sin dejar datos de prueba
+en la base local:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test quiz
+```
+
+En la siguiente etapa, el serializador de pregunta debe recibir las opciones
+anidadas y el examen por identificador. Debe validar exactamente una opción
+correcta y guardar pregunta y opciones en una transacción atómica. También se
+deberá definir el comportamiento de actualizaciones parciales y de las
+operaciones directas sobre opciones para conservar esa regla. Por ahora, el ORM
+y Admin permiten cero o varias opciones correctas: no se adelantó esa validación.
 
 ## Configuración local
 
@@ -67,7 +106,7 @@ Para aspirar a los 20 puntos deben completarse estas evidencias:
 | Operaciones HTTP | 5 | Cinco operaciones desde cliente externo y códigos correctos, incluidos errores |
 | Repositorio y tabla API | 5 | Tabla completa que coincida con la API real y entrega del repositorio |
 
-La Etapa 1 prepara la base; aún no cumple los cuatro criterios completos.
+Las etapas 1 y 2 preparan la base; aún no cumplen los cuatro criterios completos.
 El entregable posterior debe registrar nombre del alumno, título, captura del
 resultado, código, explicación, casos de prueba y captura de la estructura.
 El criterio de desempeño 1.3 no suma puntos adicionales.
