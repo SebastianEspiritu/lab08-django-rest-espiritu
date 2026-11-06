@@ -1,0 +1,1480 @@
+{
+  "executed_at_utc": "2026-11-06T04:56:05.938615+00:00",
+  "client": "Python urllib.request (real HTTP; not Postman)",
+  "base_url": "http://127.0.0.1:8000",
+  "variables": {
+    "run_tag": "lab08_d8f0a7d543d54c88be139c1d26cac6bf",
+    "exam_id": "4",
+    "question_id": "33",
+    "correct_id": "66",
+    "option_id": "88"
+  },
+  "results": [
+    {
+      "name": "01 Create isolated exam",
+      "method": "POST",
+      "path": "/api/exams/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 4,
+        "title": "HTTP lab lab08_d8f0a7d543d54c88be139c1d26cac6bf"
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "02 List exams",
+      "method": "GET",
+      "path": "/api/exams/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 3,
+        "next": null,
+        "previous": null,
+        "results": [
+          {
+            "id": 1,
+            "title": "Demo: Python basics"
+          },
+          {
+            "id": 2,
+            "title": "Demo: Web development"
+          },
+          {
+            "id": 4,
+            "title": "HTTP lab lab08_d8f0a7d543d54c88be139c1d26cac6bf"
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "03 Exam detail",
+      "method": "GET",
+      "path": "/api/exams/4/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "id": 4,
+        "title": "HTTP lab lab08_d8f0a7d543d54c88be139c1d26cac6bf"
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "04 Patch exam",
+      "method": "PATCH",
+      "path": "/api/exams/4/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "id": 4,
+        "title": "HTTP lab updated lab08_d8f0a7d543d54c88be139c1d26cac6bf"
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "05 Create nested question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 33,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf",
+        "options": [
+          {
+            "id": 66,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 67,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.02 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 34,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 2",
+        "options": [
+          {
+            "id": 68,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 69,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.03 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 35,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 3",
+        "options": [
+          {
+            "id": 70,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 71,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.04 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 36,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 4",
+        "options": [
+          {
+            "id": 72,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 73,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.05 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 37,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 5",
+        "options": [
+          {
+            "id": 74,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 75,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.06 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 38,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 6",
+        "options": [
+          {
+            "id": 76,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 77,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.07 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 39,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 7",
+        "options": [
+          {
+            "id": 78,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 79,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.08 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 40,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 8",
+        "options": [
+          {
+            "id": 80,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 81,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.09 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 41,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 9",
+        "options": [
+          {
+            "id": 82,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 83,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.10 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 42,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 10",
+        "options": [
+          {
+            "id": 84,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 85,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "06.11 Create pagination question",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 43,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 11",
+        "options": [
+          {
+            "id": 86,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 87,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "07 List questions",
+      "method": "GET",
+      "path": "/api/questions/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 32,
+        "next": "http://127.0.0.1:8000/api/questions/?page=2",
+        "previous": null,
+        "results": [
+          {
+            "id": 1,
+            "exam": 1,
+            "text": "Python demo question 1",
+            "options": [
+              {
+                "id": 1,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 2,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "exam": 1,
+            "text": "Python demo question 2",
+            "options": [
+              {
+                "id": 3,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 4,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "exam": 1,
+            "text": "Python demo question 3",
+            "options": [
+              {
+                "id": 5,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 6,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "exam": 1,
+            "text": "Python demo question 4",
+            "options": [
+              {
+                "id": 7,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 8,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "exam": 1,
+            "text": "Python demo question 5",
+            "options": [
+              {
+                "id": 9,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 10,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "exam": 1,
+            "text": "Python demo question 6",
+            "options": [
+              {
+                "id": 11,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 12,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "exam": 1,
+            "text": "Python demo question 7",
+            "options": [
+              {
+                "id": 13,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 14,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 8,
+            "exam": 1,
+            "text": "Python demo question 8",
+            "options": [
+              {
+                "id": 15,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 16,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 9,
+            "exam": 1,
+            "text": "Python demo question 9",
+            "options": [
+              {
+                "id": 17,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 18,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 10,
+            "exam": 1,
+            "text": "Python demo question 10",
+            "options": [
+              {
+                "id": 19,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 20,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "08 Question detail",
+      "method": "GET",
+      "path": "/api/questions/33/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "id": 33,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf",
+        "options": [
+          {
+            "id": 66,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 67,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "09 Patch question without options",
+      "method": "PATCH",
+      "path": "/api/questions/33/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "id": 33,
+        "exam": 4,
+        "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf edited",
+        "options": [
+          {
+            "id": 66,
+            "text": "A language",
+            "is_correct": true
+          },
+          {
+            "id": 67,
+            "text": "A database",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "10 Create incorrect option",
+      "method": "POST",
+      "path": "/api/options/",
+      "expected": 201,
+      "status": 201,
+      "response": {
+        "id": 88,
+        "question": 33,
+        "text": "Extra",
+        "is_correct": false
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "11 List options",
+      "method": "GET",
+      "path": "/api/options/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 65,
+        "next": "http://127.0.0.1:8000/api/options/?page=2",
+        "previous": null,
+        "results": [
+          {
+            "id": 1,
+            "question": 1,
+            "text": "Correct",
+            "is_correct": true
+          },
+          {
+            "id": 2,
+            "question": 1,
+            "text": "Incorrect",
+            "is_correct": false
+          },
+          {
+            "id": 3,
+            "question": 2,
+            "text": "Correct",
+            "is_correct": true
+          },
+          {
+            "id": 4,
+            "question": 2,
+            "text": "Incorrect",
+            "is_correct": false
+          },
+          {
+            "id": 5,
+            "question": 3,
+            "text": "Correct",
+            "is_correct": true
+          },
+          {
+            "id": 6,
+            "question": 3,
+            "text": "Incorrect",
+            "is_correct": false
+          },
+          {
+            "id": 7,
+            "question": 4,
+            "text": "Correct",
+            "is_correct": true
+          },
+          {
+            "id": 8,
+            "question": 4,
+            "text": "Incorrect",
+            "is_correct": false
+          },
+          {
+            "id": 9,
+            "question": 5,
+            "text": "Correct",
+            "is_correct": true
+          },
+          {
+            "id": 10,
+            "question": 5,
+            "text": "Incorrect",
+            "is_correct": false
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "12 Option detail",
+      "method": "GET",
+      "path": "/api/options/88/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "id": 88,
+        "question": 33,
+        "text": "Extra",
+        "is_correct": false
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "13 Patch option",
+      "method": "PATCH",
+      "path": "/api/options/88/",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "id": 88,
+        "question": 33,
+        "text": "Extra edited",
+        "is_correct": false
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "14 Filter by exam",
+      "method": "GET",
+      "path": "/api/questions/?exam=4",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 11,
+        "next": "http://127.0.0.1:8000/api/questions/?exam=4&page=2",
+        "previous": null,
+        "results": [
+          {
+            "id": 33,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf edited",
+            "options": [
+              {
+                "id": 66,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 67,
+                "text": "A database",
+                "is_correct": false
+              },
+              {
+                "id": 88,
+                "text": "Extra edited",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 34,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 2",
+            "options": [
+              {
+                "id": 68,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 69,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 35,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 3",
+            "options": [
+              {
+                "id": 70,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 71,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 36,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 4",
+            "options": [
+              {
+                "id": 72,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 73,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 37,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 5",
+            "options": [
+              {
+                "id": 74,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 75,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 38,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 6",
+            "options": [
+              {
+                "id": 76,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 77,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 39,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 7",
+            "options": [
+              {
+                "id": 78,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 79,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 40,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 8",
+            "options": [
+              {
+                "id": 80,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 81,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 41,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 9",
+            "options": [
+              {
+                "id": 82,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 83,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 42,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 10",
+            "options": [
+              {
+                "id": 84,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 85,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "15 Search question text",
+      "method": "GET",
+      "path": "/api/questions/?search=lab08_d8f0a7d543d54c88be139c1d26cac6bf",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 11,
+        "next": "http://127.0.0.1:8000/api/questions/?page=2&search=lab08_d8f0a7d543d54c88be139c1d26cac6bf",
+        "previous": null,
+        "results": [
+          {
+            "id": 33,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf edited",
+            "options": [
+              {
+                "id": 66,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 67,
+                "text": "A database",
+                "is_correct": false
+              },
+              {
+                "id": 88,
+                "text": "Extra edited",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 34,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 2",
+            "options": [
+              {
+                "id": 68,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 69,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 35,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 3",
+            "options": [
+              {
+                "id": 70,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 71,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 36,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 4",
+            "options": [
+              {
+                "id": 72,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 73,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 37,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 5",
+            "options": [
+              {
+                "id": 74,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 75,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 38,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 6",
+            "options": [
+              {
+                "id": 76,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 77,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 39,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 7",
+            "options": [
+              {
+                "id": 78,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 79,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 40,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 8",
+            "options": [
+              {
+                "id": 80,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 81,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 41,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 9",
+            "options": [
+              {
+                "id": 82,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 83,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 42,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 10",
+            "options": [
+              {
+                "id": 84,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 85,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "16 Pagination page two",
+      "method": "GET",
+      "path": "/api/questions/?page=2",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 32,
+        "next": "http://127.0.0.1:8000/api/questions/?page=3",
+        "previous": "http://127.0.0.1:8000/api/questions/",
+        "results": [
+          {
+            "id": 11,
+            "exam": 1,
+            "text": "Python demo question 11",
+            "options": [
+              {
+                "id": 21,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 22,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 12,
+            "exam": 1,
+            "text": "Python demo question 12",
+            "options": [
+              {
+                "id": 23,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 24,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 13,
+            "exam": 1,
+            "text": "Python demo question 13",
+            "options": [
+              {
+                "id": 25,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 26,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 14,
+            "exam": 1,
+            "text": "Python demo question 14",
+            "options": [
+              {
+                "id": 27,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 28,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 15,
+            "exam": 1,
+            "text": "Python demo question 15",
+            "options": [
+              {
+                "id": 29,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 30,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 16,
+            "exam": 2,
+            "text": "Python demo question 1",
+            "options": [
+              {
+                "id": 31,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 32,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 17,
+            "exam": 2,
+            "text": "Python demo question 2",
+            "options": [
+              {
+                "id": 33,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 34,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 18,
+            "exam": 2,
+            "text": "Python demo question 3",
+            "options": [
+              {
+                "id": 35,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 36,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 19,
+            "exam": 2,
+            "text": "Django demo question 4",
+            "options": [
+              {
+                "id": 37,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 38,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "id": 20,
+            "exam": 2,
+            "text": "Django demo question 5",
+            "options": [
+              {
+                "id": 39,
+                "text": "Correct",
+                "is_correct": true
+              },
+              {
+                "id": 40,
+                "text": "Incorrect",
+                "is_correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "17 Combined filter search page two",
+      "method": "GET",
+      "path": "/api/questions/?exam=4&search=lab08_d8f0a7d543d54c88be139c1d26cac6bf&page=2",
+      "expected": 200,
+      "status": 200,
+      "response": {
+        "count": 11,
+        "next": null,
+        "previous": "http://127.0.0.1:8000/api/questions/?exam=4&search=lab08_d8f0a7d543d54c88be139c1d26cac6bf",
+        "results": [
+          {
+            "id": 43,
+            "exam": 4,
+            "text": "Python lab08_d8f0a7d543d54c88be139c1d26cac6bf item 11",
+            "options": [
+              {
+                "id": 86,
+                "text": "A language",
+                "is_correct": true
+              },
+              {
+                "id": 87,
+                "text": "A database",
+                "is_correct": false
+              }
+            ]
+          }
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "18 Missing required title",
+      "method": "POST",
+      "path": "/api/exams/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "title": [
+          "This field is required."
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "19 Incorrect exam type",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "exam": [
+          "Incorrect type. Expected pk value, received str."
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "20 No correct option",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "options": [
+          "A question must have exactly one correct option."
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "21 Two correct options",
+      "method": "POST",
+      "path": "/api/questions/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "options": [
+          "A question must have exactly one correct option."
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "22 Invalid exam filter",
+      "method": "GET",
+      "path": "/api/questions/?exam=invalid",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "exam": "Use a positive integer exam ID (up to 2^63 - 1)."
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "23 Missing page",
+      "method": "GET",
+      "path": "/api/questions/?exam=4&page=999999",
+      "expected": 404,
+      "status": 404,
+      "response": {
+        "detail": "Invalid page."
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "24 Reject second correct option",
+      "method": "POST",
+      "path": "/api/options/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "options": [
+          "A question must have exactly one correct option."
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "25 Reject unmarking correct option",
+      "method": "PATCH",
+      "path": "/api/options/66/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "options": [
+          "A question must have exactly one correct option."
+        ]
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "26 Reject deleting correct option",
+      "method": "DELETE",
+      "path": "/api/options/66/",
+      "expected": 400,
+      "status": 400,
+      "response": {
+        "options": "A question must have exactly one correct option."
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "27 Delete incorrect option",
+      "method": "DELETE",
+      "path": "/api/options/88/",
+      "expected": 204,
+      "status": 204,
+      "response": null,
+      "checks_passed": true
+    },
+    {
+      "name": "28 Deleted option is missing",
+      "method": "GET",
+      "path": "/api/options/88/",
+      "expected": 404,
+      "status": 404,
+      "response": {
+        "detail": "No Option matches the given query."
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "29 Delete question",
+      "method": "DELETE",
+      "path": "/api/questions/33/",
+      "expected": 204,
+      "status": 204,
+      "response": null,
+      "checks_passed": true
+    },
+    {
+      "name": "30 Deleted question is missing",
+      "method": "GET",
+      "path": "/api/questions/33/",
+      "expected": 404,
+      "status": 404,
+      "response": {
+        "detail": "No Question matches the given query."
+      },
+      "checks_passed": true
+    },
+    {
+      "name": "31 Delete isolated exam and remaining questions",
+      "method": "DELETE",
+      "path": "/api/exams/4/",
+      "expected": 204,
+      "status": 204,
+      "response": null,
+      "checks_passed": true
+    },
+    {
+      "name": "32 Deleted exam is missing",
+      "method": "GET",
+      "path": "/api/exams/4/",
+      "expected": 404,
+      "status": 404,
+      "response": {
+        "detail": "No Exam matches the given query."
+      },
+      "checks_passed": true
+    }
+  ],
+  "completed": true,
+  "existing_records_preserved": true,
+  "temporary_records_cleaned": true,
+  "existing_counts": {
+    "Exam": 2,
+    "Question": 21,
+    "Option": 42
+  }
+}

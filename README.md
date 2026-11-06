@@ -1,7 +1,29 @@
 # Laboratorio 08: Servicios Web con Django
 
-Curso: Desarrollo de Aplicaciones Empresariales. Etapas 1 a 5: configuración
-inicial, modelos, relaciones, serializadores, API REST y consultas paginadas.
+Curso: Desarrollo de Aplicaciones Empresariales. Etapas 1 a 6: implementación,
+pruebas HTTP y documentación académica preparadas localmente.
+
+## Documentos de entrega
+
+- [Informe académico y guía exacta de capturas](docs/INFORME_LAB08.md).
+- [Tabla completa de la API](docs/API_TABLE.md).
+- [Revisión de los cuatro criterios de la rúbrica](docs/RUBRIC_CHECKLIST.md).
+- [Colección Postman: 41 solicitudes](postman/LAB08.postman_collection.json).
+- [Cómo importar y ejecutar la colección](postman/README.md).
+- [Resultados HTTP reales](docs/HTTP_RESULTS.json).
+- [Salida completa de verificaciones técnicas](docs/TECHNICAL_CHECKS.txt).
+
+Se ejecutó el flujo externo con Python `urllib.request`; no se ejecutó Postman.
+Las pruebas crearon y eliminaron únicamente sus datos temporales y se comprobó
+que todos los registros preexistentes quedaron intactos. Para repetirlo, iniciar
+el servidor y ejecutar `.\.venv\Scripts\python.exe scripts/http_lab08.py`.
+La colección se regenera con el mismo script y la opción `--export`.
+Sus 42 scripts JavaScript pasaron comprobación de sintaxis con Node; esto no
+equivale a ejecutarlos en Postman.
+
+Quedan pendientes los datos personales, capturas reales, recorrido visual,
+ejecución opcional de Postman como evidencia adicional y entrega al campus.
+No se realizaron commits ni push; la publicación requiere autorización.
 
 ## Instalación y ejecución en PowerShell
 
@@ -286,11 +308,11 @@ El documento no se modificó ni se copió al repositorio.
 | 4 | Opciones anidadas en pregunta; examen por identificador | Completado |
 | 5 | Validar exactamente una opción correcta por pregunta | Completado |
 | 6 | Tres ViewSets, enrutador y rutas en config/urls.py | Completado |
-| 7 | Listar, detalle, crear, modificar parcialmente y eliminar en API navegable; códigos HTTP | Pendiente |
-| 8 | Repetir cinco operaciones con JSON desde cliente HTTP externo | Pendiente |
-| 9 | Mensajes y códigos de campo ausente, tipo incorrecto y opción correcta inválida | Pendiente |
+| 7 | Listar, detalle, crear, modificar parcialmente y eliminar en API navegable; códigos HTTP | Probado automáticamente; recorrido visual/capturas pendientes |
+| 8 | Repetir cinco operaciones con JSON desde cliente HTTP externo | Completado con urllib; registro en docs/HTTP_RESULTS.json |
+| 9 | Mensajes y códigos de campo ausente, tipo incorrecto y opción correcta inválida | Completado por HTTP real; capturas pendientes |
 | 10 | Filtrar por examen, buscar por enunciado y comprobar varias páginas | Completado |
-| 11 | Tabla de recurso, dirección, método, cuerpo y respuesta esperada | Pendiente |
+| 11 | Tabla de recurso, dirección, método, cuerpo y respuesta esperada | Completado en docs/API_TABLE.md |
 | 12 | Repositorio y entregable en campus | Pendiente; commit y push requieren autorización |
 
 Para aspirar a los 20 puntos deben completarse estas evidencias:
@@ -302,9 +324,9 @@ Para aspirar a los 20 puntos deben completarse estas evidencias:
 | Operaciones HTTP | 5 | Cinco operaciones desde cliente externo y códigos correctos, incluidos errores |
 | Repositorio y tabla API | 5 | Tabla completa que coincida con la API real y entrega del repositorio |
 
-Las etapas 1 a 5 cubren la base, los serializadores, la publicación de los tres
-recursos y las consultas paginadas. Faltan las evidencias HTTP completas del
-entregable, la tabla completa de ejemplos y la entrega final.
+Las etapas 1 a 6 cubren la implementación, consultas paginadas, pruebas externas,
+tabla API e informe preparado. Faltan las capturas reales, completar datos del
+estudiante, publicar con autorización y realizar la entrega final.
 El entregable posterior debe registrar nombre del alumno, título, captura del
 resultado, código, explicación, casos de prueba y captura de la estructura.
 El criterio de desempeño 1.3 no suma puntos adicionales.

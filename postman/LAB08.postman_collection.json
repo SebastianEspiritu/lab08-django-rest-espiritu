@@ -1,0 +1,2107 @@
+{
+  "info": {
+    "name": "Laboratorio 08 - Django REST",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Ejecutar toda la colección en orden. Crea datos propios, prueba CRUD y errores, y elimina solo esos datos. No ejecutar solicitudes destructivas aisladas con IDs manuales."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Create isolated exam",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"HTTP lab {{run_tag}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set(\"run_tag\", \"lab08_\" + pm.variables.replaceIn(\"{{$guid}}\"));",
+              "for (const key of [\"exam_id\", \"question_id\",",
+              "    \"option_id\", \"correct_id\"]) {",
+              "    pm.collectionVariables.unset(key);",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});",
+              "pm.collectionVariables.set(\"exam_id\", String(data.id));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 List exams",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Exam detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/{{exam_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Patch exam",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/{{exam_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"HTTP lab updated {{run_tag}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Create nested question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}}\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});",
+              "pm.collectionVariables.set(\"question_id\", String(data.id));",
+              "pm.collectionVariables.set(\"correct_id\", String(data.options[0].id));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.02 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 2\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.03 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 3\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.04 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 4\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.05 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 5\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.06 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 6\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.07 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 7\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.08 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 8\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.09 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 9\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.10 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 10\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06.11 Create pagination question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}} item 11\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 List questions",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Question detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/{{question_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 Patch question without options",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/{{question_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Python {{run_tag}} edited\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 Create incorrect option",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"{{question_id}}\",\n  \"text\": \"Extra\",\n  \"is_correct\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});",
+              "pm.collectionVariables.set(\"option_id\", String(data.id));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 List options",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 Option detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/{{option_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 Patch option",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/{{option_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Extra edited\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 Filter by exam",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/?exam={{exam_id}}",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});",
+              "pm.test(\"Isolated result count\", function () { pm.expect(data.count).to.equal(11); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "15 Search question text",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/?search={{run_tag}}",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});",
+              "pm.test(\"Isolated result count\", function () { pm.expect(data.count).to.equal(11); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "16 Pagination page two",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/?page=2",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "17 Combined filter search page two",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/?exam={{exam_id}}&search={{run_tag}}&page=2",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Resource or paginated response\", function () {",
+              "    if (Array.isArray(data.results)) {",
+              "        pm.expect(data.count).to.be.a(\"number\");",
+              "        pm.expect(data.results.length).to.be.at.most(10);",
+              "        pm.expect(data).to.have.property(\"next\");",
+              "        pm.expect(data).to.have.property(\"previous\");",
+              "    } else { pm.expect(data.id).to.be.a(\"number\"); }",
+              "});",
+              "pm.test(\"Nested question integrity\", function () {",
+              "    const rows = data.results || [data];",
+              "    rows.forEach(function (row) {",
+              "        if (Array.isArray(row.options)) {",
+              "            pm.expect(row.exam).to.be.a(\"number\");",
+              "            pm.expect(row.options.filter(x => x.is_correct)",
+              "                .length).to.equal(1);",
+              "        }",
+              "    });",
+              "});",
+              "pm.test(\"Isolated result count\", function () { pm.expect(data.count).to.equal(11); });",
+              "pm.test(\"Combined second page\", function () {",
+              "    pm.expect(data.results.length).to.equal(1);",
+              "    pm.expect(data.next).to.equal(null);",
+              "    pm.expect(data.previous).to.be.a(\"string\");",
+              "    data.results.forEach(function (row) {",
+              "        pm.expect(String(row.exam)).to.equal(",
+              "            pm.collectionVariables.get(\"exam_id\"));",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "18 Missing required title",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"title\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "19 Incorrect exam type",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"not-an-id\",\n  \"text\": \"Python {{run_tag}}\",\n  \"options\": [\n    {\n      \"text\": \"A language\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"A database\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"exam\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "20 No correct option",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}}\",\n  \"options\": [\n    {\n      \"text\": \"No\",\n      \"is_correct\": false\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"options\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "21 Two correct options",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"exam\": \"{{exam_id}}\",\n  \"text\": \"Python {{run_tag}}\",\n  \"options\": [\n    {\n      \"text\": \"A\",\n      \"is_correct\": true\n    },\n    {\n      \"text\": \"B\",\n      \"is_correct\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"options\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "22 Invalid exam filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/?exam=invalid",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"exam\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "23 Missing page",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/?exam={{exam_id}}&page=999999",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"detail\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "24 Reject second correct option",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"{{question_id}}\",\n  \"text\": \"Bad\",\n  \"is_correct\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"options\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "25 Reject unmarking correct option",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/{{correct_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"is_correct\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"options\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "26 Reject deleting correct option",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/{{correct_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"options\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "27 Delete incorrect option",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/{{option_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "28 Deleted option is missing",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/options/{{option_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"detail\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "29 Delete question",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/{{question_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "30 Deleted question is missing",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/questions/{{question_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"detail\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "31 Delete isolated exam and remaining questions",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/{{exam_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "32 Deleted exam is missing",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/api/exams/{{exam_id}}/",
+        "description": "Ejecutar en orden; utiliza datos aislados de esta ejecución."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "const data = pm.response.json();",
+              "pm.test(\"JSON response\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\"))",
+              "        .to.include(\"application/json\");",
+              "});",
+              "pm.test(\"Validation field\", function () { pm.expect(data).to.have.property(\"detail\"); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

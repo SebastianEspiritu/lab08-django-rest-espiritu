@@ -1,0 +1,110 @@
+$ python manage.py check
+System check identified no issues (0 silenced).
+
+Exit code: 0
+
+$ python manage.py test --verbosity 2
+Found 60 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: messages, rest_framework, staticfiles
+  Apply all migrations: admin, auth, contenttypes, quiz, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying quiz.0001_initial... OK
+  Applying sessions.0001_initial... OK
+System check identified no issues (0 silenced).
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+
+test_all_lists_and_details_return_200 (quiz.api_tests.test_api.QuizAPITests.test_all_lists_and_details_return_200) ... ok
+test_browsable_api_renders_root_lists_and_details (quiz.api_tests.test_api.QuizAPITests.test_browsable_api_renders_root_lists_and_details) ... ok
+test_browsable_renderer_supports_post_patch_and_delete (quiz.api_tests.test_api.QuizAPITests.test_browsable_renderer_supports_post_patch_and_delete) ... ok
+test_create_exam_returns_201 (quiz.api_tests.test_api.QuizAPITests.test_create_exam_returns_201) ... ok
+test_create_incorrect_option_returns_201 (quiz.api_tests.test_api.QuizAPITests.test_create_incorrect_option_returns_201) ... ok
+test_create_question_returns_201_with_nested_options (quiz.api_tests.test_api.QuizAPITests.test_create_question_returns_201_with_nested_options) ... ok
+test_delete_correct_option_returns_400_without_changes (quiz.api_tests.test_api.QuizAPITests.test_delete_correct_option_returns_400_without_changes) ... ok
+test_delete_exam_cascades_with_204 (quiz.api_tests.test_api.QuizAPITests.test_delete_exam_cascades_with_204) ... ok
+test_delete_incorrect_option_returns_204 (quiz.api_tests.test_api.QuizAPITests.test_delete_incorrect_option_returns_204) ... ok
+test_delete_question_cascades_options_with_204 (quiz.api_tests.test_api.QuizAPITests.test_delete_question_cascades_options_with_204) ... ok
+test_invalid_patch_keeps_question_and_options_unchanged (quiz.api_tests.test_api.QuizAPITests.test_invalid_patch_keeps_question_and_options_unchanged) ... ok
+test_invalid_question_posts_return_400_without_changes (quiz.api_tests.test_api.QuizAPITests.test_invalid_question_posts_return_400_without_changes) ... ok
+test_marking_second_correct_option_returns_400_without_changes (quiz.api_tests.test_api.QuizAPITests.test_marking_second_correct_option_returns_400_without_changes) ... ok
+test_missing_resources_return_404_for_get_patch_and_delete (quiz.api_tests.test_api.QuizAPITests.test_missing_resources_return_404_for_get_patch_and_delete) ... ok
+test_moving_either_option_is_rejected_without_changes (quiz.api_tests.test_api.QuizAPITests.test_moving_either_option_is_rejected_without_changes) ... ok
+test_patch_each_resource_returns_200 (quiz.api_tests.test_api.QuizAPITests.test_patch_each_resource_returns_200) ... ok
+test_patch_question_replaces_options_and_switches_answer (quiz.api_tests.test_api.QuizAPITests.test_patch_question_replaces_options_and_switches_answer) ... ok
+test_put_updates_all_three_resources (quiz.api_tests.test_api.QuizAPITests.test_put_updates_all_three_resources) ... ok
+test_question_list_query_count_does_not_grow_with_questions (quiz.api_tests.test_api.QuizAPITests.test_question_list_query_count_does_not_grow_with_questions) ... ok
+test_question_response_has_nested_options_and_exam_id (quiz.api_tests.test_api.QuizAPITests.test_question_response_has_nested_options_and_exam_id) ... ok
+test_router_registers_three_viewsets_and_root_links (quiz.api_tests.test_api.QuizAPITests.test_router_registers_three_viewsets_and_root_links) ... ok
+test_same_question_relation_is_allowed (quiz.api_tests.test_api.QuizAPITests.test_same_question_relation_is_allowed) ... ok
+test_second_correct_option_returns_400_without_changes (quiz.api_tests.test_api.QuizAPITests.test_second_correct_option_returns_400_without_changes) ... ok
+test_unmarking_correct_option_returns_400_without_changes (quiz.api_tests.test_api.QuizAPITests.test_unmarking_correct_option_returns_400_without_changes) ... ok
+test_command_is_additive_and_preserves_existing_records (quiz.api_tests.test_query_parameters.DemoCommandTests.test_command_is_additive_and_preserves_existing_records) ... ok
+test_command_rolls_back_on_write_failure (quiz.api_tests.test_query_parameters.DemoCommandTests.test_command_rolls_back_on_write_failure) ... ok
+test_combined_filter_search_and_pagination (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_combined_filter_search_and_pagination) ... ok
+test_combined_parameters_can_have_no_matches (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_combined_parameters_can_have_no_matches) ... ok
+test_filter_by_exam_keeps_nested_options (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_filter_by_exam_keeps_nested_options) ... ok
+test_filtered_nonexistent_page_returns_404 (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_filtered_nonexistent_page_returns_404) ... ok
+test_filtered_search_retains_constant_query_count (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_filtered_search_retains_constant_query_count) ... ok
+test_first_second_and_last_pages_and_links (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_first_second_and_last_pages_and_links) ... ok
+test_invalid_exam_identifiers_return_400 (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_invalid_exam_identifiers_return_400) ... ok
+test_invalid_or_nonexistent_pages_return_404 (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_invalid_or_nonexistent_pages_return_404) ... ok
+test_partial_search_is_case_insensitive (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_partial_search_is_case_insensitive) ... ok
+test_search_without_matches_returns_empty_list (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_search_without_matches_returns_empty_list) ... ok
+test_unknown_exam_returns_empty_paginated_list (quiz.api_tests.test_query_parameters.QuestionQueryTests.test_unknown_exam_returns_empty_paginated_list) ... ok
+test_create_question_with_one_correct_option (quiz.serializer_tests.test_serializers.SerializerTests.test_create_question_with_one_correct_option) ... ok
+test_create_rolls_back_when_nested_write_raises_validation_error (quiz.serializer_tests.test_serializers.SerializerTests.test_create_rolls_back_when_nested_write_raises_validation_error) ... ok
+test_direct_option_cannot_change_question (quiz.serializer_tests.test_serializers.SerializerTests.test_direct_option_cannot_change_question) ... ok
+test_direct_option_save_rechecks_current_state (quiz.serializer_tests.test_serializers.SerializerTests.test_direct_option_save_rechecks_current_state) ... ok
+test_direct_option_updates_cannot_break_correct_count (quiz.serializer_tests.test_serializers.SerializerTests.test_direct_option_updates_cannot_break_correct_count) ... ok
+test_exam_serialization_and_creation (quiz.serializer_tests.test_serializers.SerializerTests.test_exam_serialization_and_creation) ... ok
+test_identifiers_are_read_only (quiz.serializer_tests.test_serializers.SerializerTests.test_identifiers_are_read_only) ... ok
+test_nested_serialization_and_exam_identifier (quiz.serializer_tests.test_serializers.SerializerTests.test_nested_serialization_and_exam_identifier) ... ok
+test_option_serialization_and_safe_direct_writes (quiz.serializer_tests.test_serializers.SerializerTests.test_option_serialization_and_safe_direct_writes) ... ok
+test_patch_can_replace_options_with_defaults (quiz.serializer_tests.test_serializers.SerializerTests.test_patch_can_replace_options_with_defaults) ... ok
+test_patch_options_require_complete_replacement_items (quiz.serializer_tests.test_serializers.SerializerTests.test_patch_options_require_complete_replacement_items) ... ok
+test_patch_rejects_existing_invalid_state (quiz.serializer_tests.test_serializers.SerializerTests.test_patch_rejects_existing_invalid_state) ... ok
+test_patch_without_options_preserves_them (quiz.serializer_tests.test_serializers.SerializerTests.test_patch_without_options_preserves_them) ... ok
+test_prefetched_questions_serialize_in_two_queries (quiz.serializer_tests.test_serializers.SerializerTests.test_prefetched_questions_serialize_in_two_queries) ... ok
+test_reject_incorrect_types_and_unknown_exam (quiz.serializer_tests.test_serializers.SerializerTests.test_reject_incorrect_types_and_unknown_exam) ... ok
+test_reject_missing_empty_or_null_options (quiz.serializer_tests.test_serializers.SerializerTests.test_reject_missing_empty_or_null_options) ... ok
+test_reject_zero_or_multiple_correct_options (quiz.serializer_tests.test_serializers.SerializerTests.test_reject_zero_or_multiple_correct_options) ... ok
+test_save_revalidates_options_after_is_valid (quiz.serializer_tests.test_serializers.SerializerTests.test_save_revalidates_options_after_is_valid) ... ok
+test_update_replaces_options_and_switches_correct_answer (quiz.serializer_tests.test_serializers.SerializerTests.test_update_replaces_options_and_switches_correct_answer) ... ok
+test_update_rolls_back_parent_and_deleted_options_on_failure (quiz.serializer_tests.test_serializers.SerializerTests.test_update_rolls_back_parent_and_deleted_options_on_failure) ... ok
+test_deleting_exam_cascades_without_affecting_other_exams (quiz.tests.QuizRelationshipTests.test_deleting_exam_cascades_without_affecting_other_exams) ... ok
+test_deleting_question_cascades_only_to_its_options (quiz.tests.QuizRelationshipTests.test_deleting_question_cascades_only_to_its_options) ... ok
+test_relationships_keep_questions_and_options_in_their_parent (quiz.tests.QuizRelationshipTests.test_relationships_keep_questions_and_options_in_their_parent) ... ok
+
+----------------------------------------------------------------------
+Ran 60 tests in 0.327s
+
+OK
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+
+
+Exit code: 0
+
+$ python manage.py makemigrations --check --dry-run
+No changes detected
+
+Exit code: 0
